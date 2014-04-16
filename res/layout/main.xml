@@ -9,5 +9,12 @@
             android:layout_height="wrap_content"
             android:id="@+id/justaview"
             android:layout_gravity="center_vertical"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Salva screenshot"
+        android:id="@+id/btnSalvaScreenshot"
+        android:layout_gravity="center_horizontal|bottom" />
 </FrameLayout>
 

@@ -3,15 +3,22 @@ package it.androidworld.devcorner.drawingtest;
 import android.app.Activity;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Environment;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
-public class MyActivity extends Activity implements GestureDetector.OnGestureListener{
+import java.io.File;
+import java.util.Calendar;
+
+public class MyActivity extends Activity implements GestureDetector.OnGestureListener, View.OnClickListener{
 
     private GestureDetector gestureDetector;
     private JustAView jav;
+    private Button btnSalvaScreenshot;
     private float layoutX;
 
     @Override
@@ -21,6 +28,9 @@ public class MyActivity extends Activity implements GestureDetector.OnGestureLis
 
         gestureDetector = new GestureDetector(this, this);
         jav = (JustAView) findViewById(R.id.justaview);
+
+        btnSalvaScreenshot = (Button) findViewById(R.id.btnSalvaScreenshot);
+        btnSalvaScreenshot.setOnClickListener(this);
 
         final Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
@@ -87,8 +97,28 @@ public class MyActivity extends Activity implements GestureDetector.OnGestureLis
 
         final float coeff = Math.abs(diff) * 360;
         final float fResult = coeff / layoutX;
-        final int result = Math.round(fResult);
-        return result;
+        return Math.round(fResult);
+    }
+
+    @Override
+    public void onClick(View view) {
+
+        final String tmpFileName = Environment.getExternalStorageDirectory().toString() +
+                File.separator + String.valueOf(Calendar.getInstance().getTimeInMillis()) + ".png";
+
+        final View tmpView = jav;
+
+        final ViewHolder holder = new ViewHolder(tmpView,new Azione(),tmpFileName);
+
+        new ImageSaver().execute(new ViewHolder[]{ holder });
+
+    }
+
+    private final class Azione implements ViewHolder.Callback{
+        @Override
+        public void action(boolean result) {
+            Toast.makeText(getApplicationContext(),"Immagine salvata correttamente", Toast.LENGTH_SHORT).show();
+        }
     }
 
 }
